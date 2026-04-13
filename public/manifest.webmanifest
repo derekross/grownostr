@@ -1,0 +1,16 @@
+{
+  "name": "Grow Nostr Initiative",
+  "short_name": "GrowNostr",
+  "description": "Empowering the future of decentralized social communication.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -19,7 +19,7 @@ export function useSendDM() {
   const [error, setError] = useState<string | null>(null);
   const { nostr } = useNostr();
 
-  const sendDM = async ({ message, subject, useAnonymous = true }: SendDMParams): Promise<boolean> => {
+  const sendDM = async ({ message, subject: _subject, useAnonymous: _useAnonymous = true }: SendDMParams): Promise<boolean> => {
     setIsSending(true);
     setError(null);
 
