@@ -1,6 +1,6 @@
 import { useNostr } from "@nostrify/react";
 import { useQuery } from "@tanstack/react-query";
-import { NostrEvent, NostrFilter } from "@nostrify/nostrify";
+import { NostrEvent } from "@nostrify/nostrify";
 import { nip19 } from "nostr-tools";
 
 export interface NostrProfile {
@@ -47,7 +47,7 @@ export function useNostrProfiles(npubs: string[]) {
 
   return useQuery({
     queryKey: ["nostr", "profiles", npubs],
-    queryFn: async () => {
+    queryFn: async (c) => {
       // Convert npubs to hex pubkeys
       const pubkeys = npubs.map((npub) => {
         try {
@@ -63,22 +63,13 @@ export function useNostrProfiles(npubs: string[]) {
         return [];
       }
 
-      const filters: NostrFilter[] = [
+      const signal = AbortSignal.any([c.signal, AbortSignal.timeout(5000)]);
+      const events = await nostr.query([
         {
-          kinds: [0], // Profile metadata events
+          kinds: [0],
           authors: pubkeys,
         },
-      ];
-
-      const events: NostrEvent[] = [];
-
-      for await (const msg of nostr.req(filters, { signal: AbortSignal.timeout(5000) })) {
-        if (msg[0] === "EVENT") {
-          events.push(msg[2]);
-        } else if (msg[0] === "EOSE") {
-          break;
-        }
-      }
+      ], { signal });
 
       // Get the most recent profile event for each pubkey
       const profileMap = new Map<string, NostrEvent>();

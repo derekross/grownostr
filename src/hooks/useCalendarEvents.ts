@@ -1,6 +1,6 @@
 import { useNostr } from "@nostrify/react";
 import { useQuery } from "@tanstack/react-query";
-import { NostrEvent, NostrFilter } from "@nostrify/nostrify";
+import { NostrEvent } from "@nostrify/nostrify";
 import { nip19 } from "nostr-tools";
 
 // GNI's npub converted to hex
@@ -92,8 +92,9 @@ export function useCalendarEvents() {
 
   return useQuery({
     queryKey: ["nostr", "calendar-events", GNI_PUBKEY],
-    queryFn: async () => {
-      const filters: NostrFilter[] = [
+    queryFn: async (c) => {
+      const signal = AbortSignal.any([c.signal, AbortSignal.timeout(5000)]);
+      const events = await nostr.query([
         // Events created by GNI
         {
           kinds: [31922, 31923],
@@ -104,17 +105,7 @@ export function useCalendarEvents() {
           kinds: [31922, 31923],
           "#p": [GNI_PUBKEY],
         },
-      ];
-
-      const events: NostrEvent[] = [];
-
-      for await (const msg of nostr.req(filters, { signal: AbortSignal.timeout(5000) })) {
-        if (msg[0] === "EVENT") {
-          events.push(msg[2]);
-        } else if (msg[0] === "EOSE") {
-          break;
-        }
-      }
+      ], { signal });
 
       // Parse and filter valid events
       const calendarEvents = events
