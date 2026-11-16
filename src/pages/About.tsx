@@ -5,7 +5,7 @@ import { useNostrProfiles } from "../hooks/useNostrProfiles";
 // Team member npubs - update these with the correct values
 const TEAM_MEMBERS = [
   {
-    npub: "npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424",
+    npub: "npub1derek7jkw86c57jaqnkwmvqvzdzm3yv2378zwrwgqlwm9qvdhg5qama4zl",
     role: "Co-Founder",
   },
   {
